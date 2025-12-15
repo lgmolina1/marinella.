@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>For Marinella. </title>
+  <title>For Marinella 💖</title>
 
   <style>
     body {
@@ -57,10 +57,10 @@
     }
 
     .celebration-gif {
-      width: 180px;
-      max-width: 80%;
+      width: 250px;
+      max-width: 90%;
       border-radius: 12px;
-      animation: pop 0.5s ease forwards;
+      animation: pop 0.5s ease forwards, bounce 1s infinite alternate;
     }
 
     @keyframes pulse {
@@ -71,6 +71,11 @@
     @keyframes pop {
       from { transform: scale(0); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
     }
 
     canvas {
@@ -98,7 +103,7 @@
       I have a crush on you, and I would really like
       to pursue you sincerely. 
       <br /><br />
-      Ok lang ba if I put you on my wishlist this upcoming christmas?
+      Ok lang ba if I put you on my wishlist this upcoming Christmas?
     </p>
     <button class="yes" onclick="sayYes()">Yes 💗</button>
     <button class="no" onclick="sayNo()">No 😅</button>
@@ -112,11 +117,7 @@
       Thank you!! sana ma crush back na rin HAHAHAH <br />
     </p>
     <div class="celebrations">
-      <img src="nba.gif" class="celebration-gif" />
-      <img src="nba-1.gif" class="celebration-gif" />
-      <img src="nba-2.gif class="celebration-gif" />
-      <img src="nba-3.gif class="celebration-gif" />
-      <img src="nba-4.gif class="celebration-gif" />
+      <img id="celebrationGif" src="gif1.gif" class="celebration-gif" />
     </div>
   </div>
 
@@ -144,12 +145,35 @@
       music.play().catch(() => {});
     }
 
+    // GIF cycling
+    const gifs = [
+      "nba.gif",
+      "nba-1.gif",
+      "nba-2.gif",
+      "nba-3.gif",
+      "nba-4.gif",
+    ];
+    let gifIndex = 0;
+    const gifElement = document.getElementById("celebrationGif");
+
+    function cycleGifs() {
+      gifIndex = (gifIndex + 1) % gifs.length;
+      gifElement.src = gifs[gifIndex];
+    }
+
+    let gifInterval;
+
+    function startGifCycle() {
+      gifInterval = setInterval(cycleGifs, 3000); // change every 3 seconds
+    }
+
     function sayYes() {
       playMusic();
       document.getElementById('mainCard').classList.add('hidden');
       document.getElementById('noCard').classList.add('hidden');
       document.getElementById('yesCard').classList.remove('hidden');
       startConfetti();
+      startGifCycle();
     }
 
     function sayNo() {
