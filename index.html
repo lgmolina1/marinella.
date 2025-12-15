@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Marinella. </title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(180deg, #f6d1dc, #f3c4d8, #eec9f1);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      height: 100vh;
+      padding: 30px 22px;
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1 { color: #d6336c; }
+    p { color: #555; line-height: 1.5; }
+
+    button {
+      border: none;
+      padding: 14px 28px;
+      margin: 8px 0;
+      border-radius: 999px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .yes { background: linear-gradient(135deg, #ff6f91, #ff8fab); color: white; }
+    .no { background: #e9ecef; color: #495057; }
+
+    .hidden { display: none; }
+
+    .heart { font-size: 3.5rem; animation: pulse 1s infinite alternate; }
+
+    .celebrations {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    .celebration-gif {
+      width: 180px;
+      max-width: 80%;
+      border-radius: 12px;
+      animation: pop 0.5s ease forwards;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
+
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Music -->
+  <audio id="bgMusic" loop>
+    <source src="ligaya-mrld.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- MAIN -->
+  <div class="phone" id="mainCard">
+    <h1>Hi Marinella 💕</h1>
+    <p>
+      I have a crush on you, and I would really like
+      to pursue you sincerely. 
+      <br /><br />
+      Ok lang ba if I put you on my wishlist this upcoming christmas?
+    </p>
+    <button class="yes" onclick="sayYes()">Yes 💗</button>
+    <button class="no" onclick="sayNo()">No 😅</button>
+  </div>
+
+  <!-- YES -->
+  <div class="phone hidden" id="yesCard">
+    <div class="heart">💖</div>
+    <h1>You said YESSS! no wayyyy bruhhh 🎉</h1>
+    <p>
+      Thank you!! sana ma crush back na rin HAHAHAH <br />
+    </p>
+    <div class="celebrations">
+      <img src="nba.gif" class="celebration-gif" />
+      <img src="nba-1.gif" class="celebration-gif" />
+      <img src="nba-2.gif class="celebration-gif" />
+      <img src="nba-3.gif class="celebration-gif" />
+      <img src="nba-4.gif class="celebration-gif" />
+    </div>
+  </div>
+
+  <!-- NO -->
+  <div class="phone hidden" id="noCard">
+    <h1>Sure na baaa? 🥺</h1>
+    <p id="convinceText">Sige naa, promise to respect your pace 💗</p>
+    <button class="yes" onclick="sayYes()">Okay… Yes 💕</button>
+    <button class="no" onclick="convince()">Still No 🙈</button>
+  </div>
+
+  <script>
+    let index = 0;
+    const messages = [
+      "I’ll be patient and sincere 🌸",
+      "Sige naaa",
+      "I just want to make you smile 🥹",
+      "Wag na ikaw mag NoooOO 💗",
+      "Mag yes ka naa huhu 😆"
+    ];
+
+    function playMusic() {
+      const music = document.getElementById("bgMusic");
+      music.volume = 0.5;
+      music.play().catch(() => {});
+    }
+
+    function sayYes() {
+      playMusic();
+      document.getElementById('mainCard').classList.add('hidden');
+      document.getElementById('noCard').classList.add('hidden');
+      document.getElementById('yesCard').classList.remove('hidden');
+      startConfetti();
+    }
+
+    function sayNo() {
+      playMusic();
+      document.getElementById('mainCard').classList.add('hidden');
+      document.getElementById('noCard').classList.remove('hidden');
+    }
+
+    function convince() {
+      document.getElementById('convinceText').textContent =
+        messages[index % messages.length];
+      index++;
+    }
+
+    // Confetti
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let confetti = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function startConfetti() {
+      confetti = Array.from({ length: 220 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 4 + 2,
+        c: `hsl(${Math.random() * 360}, 80%, 75%)`
+      }));
+      requestAnimationFrame(draw);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.c;
+        ctx.fill();
+        p.y += p.d;
+        if (p.y > canvas.height) p.y = -10;
+      });
+      requestAnimationFrame(draw);
+    }
+  </script>
+
+</body>
+</html>
